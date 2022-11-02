@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: Policy management service
+  version: 1.0.0
+tags:
+  - name: policy-management
+    description: Creation, modification, and getting info.
+paths:
+  /policy:
+    post:
+      tags:
+        - policy-management
+      summary: Creation of the policy
+      operationId: createPolicy
+      requestBody:
+        description: Policy creation request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyCreateRequest'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyCreateResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiExceptionModel'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiExceptionModel'
+components:
+  schemas:
+    PolicyCreateRequest:
+      type: object
+      required:
+        - startDate
+        - insuredPersons
+      properties:
+        startDate:
+          type: string
+          format: date
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsuredPerson'
+    PolicyCreateResponse:
+      type: object
+      required:
+        - policyId
+        - startDate
+        - insuredPersons
+        - totalPremium
+      properties:
+        policyId:
+          type: string
+          example: 'CU423DF89'
+        startDate:
+          type: string
+          format: date
+        insuredPersons:
+          type: array
+          items:
+            $ref: '#/components/schemas/InsuredPerson'
+        totalPremium:
+          type: number
+          example: 15.90
+    InsuredPerson:
+      type: object
+      required:
+        - firstName
+        - secondName
+        - premium
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          example: 'Jane'
+        secondName:
+          type: string
+          example: 'Johnson'
+        premium:
+          type: number
+          example: 15.90
+    ApiExceptionModel:
+      type: object
+      required:
+        - code
+        - message
+        - timestamp
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+  
